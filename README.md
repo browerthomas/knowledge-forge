@@ -2,7 +2,7 @@
 
 A personal Claude skills marketplace. Currently ships one skill: **learning-sprint**.
 
-> **learning-sprint** — takes any topic from zero to retained understanding using chained techniques: a 20-hour 80/20 plan, a one-page cheat sheet, progressive quizzing, a 5-level difficulty ladder, web-validated resources, the Feynman re-teach loop, and a retention stage that exports an **Anki deck**, a printable **study guide**, and a **practice exam**. Progress **persists and resumes across sessions**, and it has a dedicated **certification mode** (blueprint-weighted plans and exams). The first time it runs in a conversation it shows an orientation card and lets you pick a run mode.
+> **learning-sprint** — takes any topic from zero to retained understanding using chained techniques: a 20-hour 80/20 plan, a one-page cheat sheet, progressive quizzing, a 5-level difficulty ladder, web-validated resources, the Feynman re-teach loop, and a retention stage that exports an **Anki deck**, a printable **study guide**, and a **practice exam**. It **never teaches from memory** — a mandatory research gate grounds every plan, fact, and quiz answer in fresh, cross-checked, cited sources first. Progress **persists and resumes across sessions**, and it has a dedicated **certification mode** (blueprint-weighted plans and exams). The first time it runs in a conversation it shows an orientation card and lets you pick a run mode.
 
 ### Requirements for the export features
 

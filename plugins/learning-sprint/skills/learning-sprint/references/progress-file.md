@@ -43,15 +43,23 @@ cards:
      ease: 2.5, interval_days: 1, repetitions: 1, due: 2026-06-03, lapses: 0, last_grade: 4}
 weak_spots: ["VPC peering vs Transit Gateway", "S3 storage-class trade-offs"]
 readiness: 38                  # rough overall % (weighted mean of domain mastery)
+researched: 2026-06-02         # when the research gate last ran (refresh if stale)
+sources:                       # cited knowledge base from the research gate
+  - {title: "AWS SAA-C03 Exam Guide", url: "https://...", checked: 2026-06-02}
+  - {title: "Official AWS Well-Architected Framework", url: "https://...", checked: 2026-06-02}
 ---
 
 # AWS SAA-C03 — Sprint Notes
 
+## Research brief
+<what's actually current, the real 20%, the recommended path, key pitfalls —
+all grounded in `sources:` above. This is the substrate every stage draws from.>
+
 ## Session log
-- 2026-06-02 — Stage 1 plan built; quizzed domain 1 (6/10). Weak: VPC peering, S3 classes.
+- 2026-06-02 — Research gate run (4 sources); Stage 1 plan built; quizzed domain 1 (6/10).
 
 ## Cheat sheet
-<the one-page cheat sheet, kept current>
+<the one-page cheat sheet, kept current; cite sources, flag anything unverified>
 ```
 
 ## Resume protocol (run on every activation)

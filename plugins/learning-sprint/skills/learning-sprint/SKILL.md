@@ -1,6 +1,6 @@
 ---
 name: learning-sprint
-description: "Run a structured, resumable learning session that takes any topic from zero to retained understanding using chained techniques: a 20-hour 80/20 plan, a one-page cheat sheet, progressive quizzing, a 5-level difficulty ladder, web-validated resources, the Feynman re-teach loop, and spaced-repetition export (Anki deck, printable study guide, practice exam). Progress persists across sessions, so sprints can be resumed. Strong fit for certification study (AWS/Azure/GCP, CompTIA, CISSP, PMP, CKA, etc.). MANDATORY TRIGGERS: 'learning sprint', 'run a sprint on', 'teach me', 'I need to learn X fast', 'help me master X', 'tutor me on X', 'I want to learn X', 'study for my <cert> exam', 'help me pass <cert>', 'make me flashcards / an Anki deck for X', 'build a study guide for X', 'make a practice exam for X', 'resume my sprint'. STRONG TRIGGERS (use when paired with a real topic and intent to actually learn, not a one-off lookup): 'how do I get good at X', 'where do I start with X', 'quiz me on X', 'explain X then test me', 'build me a study plan for X', 'I'm trying to ramp up on X'. Do NOT trigger on simple factual lookups ('what is X'), single definition requests, or when the user just wants one answer rather than to build durable understanding."
+description: "Run a structured, resumable learning session that takes any topic from zero to retained understanding using chained techniques: a 20-hour 80/20 plan, a one-page cheat sheet, progressive quizzing, a 5-level difficulty ladder, web-validated resources, the Feynman re-teach loop, and spaced-repetition export (Anki deck, printable study guide, practice exam). Always grounds the material in fresh multi-source web research BEFORE presenting anything — never teaches from memory or guesswork. Progress persists across sessions, so sprints can be resumed. Strong fit for certification study (AWS/Azure/GCP, CompTIA, CISSP, PMP, CKA, etc.). MANDATORY TRIGGERS: 'learning sprint', 'run a sprint on', 'teach me', 'I need to learn X fast', 'help me master X', 'tutor me on X', 'I want to learn X', 'study for my <cert> exam', 'help me pass <cert>', 'make me flashcards / an Anki deck for X', 'build a study guide for X', 'make a practice exam for X', 'resume my sprint'. STRONG TRIGGERS (use when paired with a real topic and intent to actually learn, not a one-off lookup): 'how do I get good at X', 'where do I start with X', 'quiz me on X', 'explain X then test me', 'build me a study plan for X', 'I'm trying to ramp up on X'. Do NOT trigger on simple factual lookups ('what is X'), single definition requests, or when the user just wants one answer rather than to build durable understanding."
 ---
 
 # Learning Sprint
@@ -17,6 +17,7 @@ request (e.g. "just quiz me on X" → Stage 3 only).
 ## Bundled resources
 
 Read these as needed; they hold the load-bearing detail so this file stays lean:
+- `references/research-gate.md` — **mandatory** research-before-teaching gate (no guessing).
 - `references/progress-file.md` — the cross-session state file + **resume protocol**.
 - `references/certification-mode.md` — exam blueprints, weighting, realistic exams.
 - `references/spaced-repetition.md` — SM-2 rule for in-app re-quizzing + Anki split.
@@ -60,13 +61,34 @@ Substitute the actual topic into **[topic]**. If they didn't name one, ask here.
 - *Just one stage — I'll pick*
 - *Jump straight in*
 
-**3. After they choose**, begin. The first real action is Stage 1's scoping question:
-*what do you want to be able to DO at the end?* — every stage is bounded by that goal.
-If it's a **certification**, also read `references/certification-mode.md` and capture
-the exam date and blueprint now.
+**3. After they choose**, begin with the scoping question: *what do you want to be
+able to DO at the end?* — every stage is bounded by that goal. Then **run the research
+gate** (below) before producing any material. If it's a **certification**, also read
+`references/certification-mode.md` and capture the exam date and blueprint now.
 
 Skip orientation entirely if the trigger already names both a stage and a topic with
-no ambiguity (e.g. "just quiz me on TLS handshakes" → go straight to Stage 3).
+no ambiguity (e.g. "just quiz me on TLS handshakes" → go straight to Stage 3) — but the
+research gate still applies before you produce content.
+
+---
+
+## Ground First — Research Gate (MANDATORY)
+
+**Never teach from memory. Research the topic against current sources before producing
+any plan, cheat sheet, quiz, ladder, or explanation. No guessing, ever.** This fires
+once per sprint, before Stage 1, on a cold start (a resumed sprint already has its
+researched base — refresh only if stale).
+
+Read and follow `references/research-gate.md`. In short: do genuine multi-source web
+research, read the authoritative/primary sources, cross-check every non-trivial claim
+against ≥2 current sources, and record a cited knowledge base in the progress file.
+Scale depth to the stakes — go deep for certifications, interviews, and broad fields,
+using a deep-research capability if one is available. Then show a short **research
+brief** ("here's what's actually current, the real 20%, the sources") before Stage 1.
+
+Hard rules that bind every stage below: everything traces to the researched base;
+cite substantive claims; flag anything you couldn't verify as "⚠️ unverified"; if
+research can't confirm something important, say so rather than guess.
 
 ---
 
@@ -84,6 +106,7 @@ framework, a certification domain, a language feature, a body of theory, a tool.
 
 | # | Stage | What it produces |
 |---|---|---|
+| 0 | **Research Gate** | A cited, current knowledge base — runs first, mandatory, no guessing |
 | 1 | **20-Hour Plan** | A 10-session 80/20 roadmap targeting the vital 20% |
 | 2 | **One-Page Cheat Sheet** | A single-page compression — bullets, diagrams, examples |
 | 3 | **Quiz Until You Break** | 10 progressively harder questions, graded, with gap analysis |
@@ -92,8 +115,9 @@ framework, a certification domain, a language feature, a body of theory, a tool.
 | 6 | **Feynman Loop** | User re-explains; Claude finds gaps, re-teaches, repeats |
 | 7 | **Retain & Export** | Anki deck, study guide, practice exam, spaced re-quizzes |
 
-**Recommended order for a cold start:** 1 → 5 → 4 → 2 → 3 → 6 → 7. But honor whatever
-the user asks for.
+**Recommended order for a cold start:** 0 (gate) → 1 → 5 → 4 → 2 → 3 → 6 → 7. The
+gate is not optional — every other stage draws from its researched base. Honor
+whatever order the user asks for, but never skip the gate before producing content.
 
 ---
 
@@ -105,8 +129,9 @@ Build a 20-hour plan focused on the 20% that drives 80% of results. Break it int
 - The single best resource for that session
 - A **15-minute review** block at the end of each session
 
-Be ruthless about scope. Cut anything not load-bearing for the stated goal. If no
-goal was given, ask: *what do you want to be able to DO at the end?* For a
+Be ruthless about scope. Cut anything not load-bearing for the stated goal. **Base the
+80/20 on what the research gate found experts actually recommend — not on a guess.** If
+no goal was given, ask: *what do you want to be able to DO at the end?* For a
 certification, allocate time by **domain weight × (1 − mastery)** — see
 `references/certification-mode.md`. If the user has less than 20 hours, scale the plan
 to their actual budget.
@@ -117,7 +142,8 @@ to their actual budget.
 
 Summarize the key concepts on a **single page** reviewable in 5 minutes. Bullets,
 simple ASCII/text diagrams where they clarify, one concrete example per concept.
-Optimize for recall, not completeness — a memory anchor, not documentation.
+Optimize for recall, not completeness — a memory anchor, not documentation. **Every
+fact comes from the researched base; flag anything unverified rather than guessing.**
 
 Save it into the progress file's body, and offer to render it as a polished study
 guide in Stage 7. The cheat sheet is also the main source for Anki cards.
@@ -133,9 +159,11 @@ Deliver them **one at a time**. After each answer:
 2. **Explain what was missed** — the actual gap, not just the right answer.
 3. Only then reveal the next question.
 
-Stop early if the user breaks (two wrong in a row) and re-teach the failing concept
-before continuing. **Record every miss** in the progress file's `weak_spots` and turn
-each into an Anki card — these feed Stage 6 and Stage 7. Do not dump all 10 at once.
+Questions and their correct answers come from the researched base, not memory — if you
+can't ground an answer in a current source, don't ask that question. Stop early if the
+user breaks (two wrong in a row) and re-teach the failing concept before continuing.
+**Record every miss** in the progress file's `weak_spots` and turn each into an Anki
+card — these feed Stage 6 and Stage 7. Do not dump all 10 at once.
 
 ---
 
@@ -217,11 +245,17 @@ Carry the same topic and weak spots across all stages. Stage 3's misses drive St
 6's loop and Stage 7's cards; Stage 1's scope bounds Stage 4's ladder; for a cert,
 the blueprint weights bound the plan, quiz, and practice exam.
 
-### Validate, and grade honestly
-Stage 5 (and any resource mention) requires a live web search. Stages 3, 6, and the
-readiness call only work if feedback is truthful — calibrate difficulty up when the
-user is cruising, stop to re-teach the moment they stall, and never give false
-"you're ready."
+### Research first, never guess
+The research gate (Stage 0) is mandatory and binds every other stage: all content
+traces to current, cross-checked sources; substantive claims are cited; anything
+unverifiable is flagged "⚠️ unverified" rather than asserted. Stage 5 and any resource
+mention require a live web search. When research can't confirm something, say so — do
+not fill the gap with a plausible guess.
+
+### Grade honestly
+Stages 3, 6, and the readiness call only work if feedback is truthful — calibrate
+difficulty up when the user is cruising, stop to re-teach the moment they stall, and
+never give false "you're ready."
 
 ---
 
@@ -229,6 +263,7 @@ user is cruising, stop to re-teach the moment they stall, and never give false
 
 ```
 0. RESUME   → check ~/learning-sprints/<slug>/; resume if found, else orient once
+   RESEARCH → MANDATORY gate: multi-source web research, cited base, NO guessing
 1. PLAN     → 20hr, 10 sessions, 80/20, 15-min reviews (cert: weight time by blueprint)
 2. COMPRESS → one page, bullets + diagrams + examples
 3. TEST     → 10 questions, one at a time, graded, gaps named + recorded
