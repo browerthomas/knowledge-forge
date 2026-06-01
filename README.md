@@ -2,7 +2,12 @@
 
 A personal Claude skills marketplace. Currently ships one skill: **learning-sprint**.
 
-> **learning-sprint** — takes any topic from zero to retained understanding using six chained techniques: a 20-hour 80/20 plan, a one-page cheat sheet, progressive quizzing, a 5-level difficulty ladder, web-validated resources, and the Feynman re-teach loop. The first time it runs in a conversation it shows an orientation card and lets you pick a run mode.
+> **learning-sprint** — takes any topic from zero to retained understanding using chained techniques: a 20-hour 80/20 plan, a one-page cheat sheet, progressive quizzing, a 5-level difficulty ladder, web-validated resources, the Feynman re-teach loop, and a retention stage that exports an **Anki deck**, a printable **study guide**, and a **practice exam**. Progress **persists and resumes across sessions**, and it has a dedicated **certification mode** (blueprint-weighted plans and exams). The first time it runs in a conversation it shows an orientation card and lets you pick a run mode.
+
+### Requirements for the export features
+
+- **Persistence** writes to `~/learning-sprints/<slug>/` — no setup needed.
+- **Anki / study guide / practice exam** exports use `python3` (any 3.x). The Anki deck always produces a zero-dependency `.tsv` (import via Anki → File → Import); install `genanki` (`pip install genanki`) for one-click `.apkg` files. Study guide / practice exam always produce print-ready HTML (open → Print → Save as PDF); if `pandoc`, `wkhtmltopdf`, or `weasyprint` is installed, a PDF is generated automatically too.
 
 ---
 
