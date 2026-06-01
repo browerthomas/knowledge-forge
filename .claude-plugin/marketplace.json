@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "knowledge-forge",
+  "owner": {
+    "name": "browerthomas"
+  },
+  "description": "Personal Claude skills.",
+  "plugins": [
+    {
+      "name": "learning-sprint",
+      "source": "./plugins/learning-sprint",
+      "description": "Takes any topic from zero to retained understanding via six chained techniques: 20-hour plan, cheat sheet, progressive quiz, difficulty ladder, validated resources, and the Feynman re-teach loop.",
+      "version": "1.0.0",
+      "category": "learning",
+      "tags": ["learning", "study", "tutoring", "feynman", "spaced-practice"]
+    }
+  ]
+}
