@@ -101,6 +101,11 @@ ol.choices li::before { content: counter(choice, upper-alpha) ")"; position:abso
 .answer-key .num { font-weight:700; color:var(--accent); } .answer-key .correct { font-weight:700; }
 .answer-key .explain { color:#444; margin-top:.15em; }
 .meta { color:var(--muted); margin-bottom:1.4em; }
+.example { border-left:4px solid var(--accent); background:#fafcff; padding:.5em .9em; margin:1em 0;
+           border-radius:0 6px 6px 0; break-inside:avoid; page-break-inside:avoid; }
+.example .lbl { font-weight:700; color:var(--accent); font-size:.8em; text-transform:uppercase; letter-spacing:.05em; }
+.check { margin-top:1.6em; } .check details { border:1px solid var(--rule); border-radius:6px; padding:.5em .8em; margin:.5em 0; }
+.check summary { font-weight:600; cursor:pointer; }
 @media print { .no-print { display:none; } body { max-width:none; padding:0; }
   a { color:inherit; text-decoration:none; } * { -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
 </style></head>
@@ -129,6 +134,34 @@ def render_study_guide(spec):
             block.append(f'<div class="keypoints"><strong>Key points</strong><ul>{items}</ul></div>')
         block.append("</div>")
         parts.append("\n".join(block))
+    return "\n".join(parts)
+
+
+def render_chapter(spec):
+    """A digestible lesson: concept -> worked example -> check-yourself."""
+    parts = []
+    for sec in spec.get("sections", []):
+        block = ['<div class="section">', f"<h2>{esc(sec.get('heading',''))}</h2>"]
+        if sec.get("body_html"):
+            block.append(sec["body_html"])
+        ex = sec.get("example")
+        if ex:
+            block.append(f'<div class="example"><div class="lbl">Example</div>{ex.get("body_html", "")}</div>')
+        if sec.get("keypoints"):
+            items = "".join(f"<li>{esc(k)}</li>" for k in sec["keypoints"])
+            block.append(f'<div class="keypoints"><strong>Key points</strong><ul>{items}</ul></div>')
+        block.append("</div>")
+        parts.append("\n".join(block))
+    check = spec.get("check", [])
+    if check:
+        c = ['<div class="check"><h2>Check yourself</h2>']
+        for i, q in enumerate(check, 1):
+            c.append(
+                f"<details><summary>{i}. {esc(q.get('q', ''))}</summary>"
+                f"<div>{esc(q.get('a', ''))}</div></details>"
+            )
+        c.append("</div>")
+        parts.append("\n".join(c))
     return "\n".join(parts)
 
 
@@ -296,6 +329,130 @@ def render_mock_exam(spec):
     )
 
 
+BOARD_PAGE = r"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>%%TITLE%%</title>
+<style>
+body{font-family:"Helvetica Neue",Arial,sans-serif;color:#1a1a1a;line-height:1.5;
+     max-width:52rem;margin:0 auto;padding:2rem 1rem;}
+h1{font-size:1.5em;border-bottom:3px solid #2453a6;padding-bottom:.2em;}
+.caption{color:#555;margin-top:1rem;}
+.mermaid{margin:1.5rem 0;text-align:center;}
+table{border-collapse:collapse;margin:1rem 0;width:100%;}
+th,td{border:1px solid #bbb;padding:.45em .7em;text-align:left;} th{background:#eef2fb;}
+.note{color:#777;font-size:.85em;margin-top:2rem;}
+</style></head><body>
+<h1>%%TITLE%%</h1>
+%%BODY%%
+%%MERMAID%%
+<div class="caption">%%CAPTION%%</div>
+<p class="note">If a diagram appears as code, this view needs internet to render it (Mermaid). The text is still accurate.</p>
+%%SCRIPT%%
+</body></html>"""
+
+MERMAID_SCRIPT = (
+    '<script type="module">'
+    "import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';"
+    "mermaid.initialize({startOnLoad:true,theme:'neutral'});"
+    "</script>"
+)
+
+
+def render_board(spec):
+    """A visual aid — Mermaid diagram and/or styled HTML, for when a picture beats prose."""
+    mermaid = spec.get("mermaid", "")
+    body = spec.get("html", "")  # trusted styled HTML (tables, labeled boxes)
+    mblock = f'<pre class="mermaid">{esc(mermaid)}</pre>' if mermaid else ""
+    return (
+        BOARD_PAGE.replace("%%TITLE%%", esc(spec.get("title", "On the board")))
+        .replace("%%BODY%%", body)
+        .replace("%%MERMAID%%", mblock)
+        .replace("%%CAPTION%%", esc(spec.get("caption", "")))
+        .replace("%%SCRIPT%%", MERMAID_SCRIPT if mermaid else "")
+    )
+
+
+DASH_PAGE = r"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>%%TITLE%%</title>
+<style>
+body{font-family:"Helvetica Neue",Arial,sans-serif;color:#1a1a1a;max-width:44rem;margin:0 auto;padding:2rem 1rem;}
+h1{font-size:1.6em;} h2{font-size:1.15em;color:#2453a6;margin-top:1.6rem;}
+.verdict{font-size:1.5em;font-weight:800;padding:.6rem 1rem;border-radius:8px;margin:1rem 0;}
+.go{background:#e7f5ec;color:#1f6f43;border:2px solid #1f6f43;}
+.notyet{background:#fbe7e7;color:#b4232c;border:2px solid #b4232c;}
+.row{display:flex;align-items:center;gap:.6rem;margin:.4rem 0;}
+.row .lab{width:13rem;font-size:.92em;} .row .num{width:3rem;text-align:right;font-variant-numeric:tabular-nums;}
+.track{flex:1;background:#eee;border-radius:5px;height:.8rem;overflow:hidden;}
+.fill{height:100%;border-radius:5px;}
+.mock{display:inline-block;width:2.4rem;text-align:center;padding:.3rem 0;margin:.15rem;border-radius:5px;font-weight:700;font-size:.85em;}
+.big{font-size:2em;font-weight:800;} .muted{color:#666;}
+</style></head><body>
+<h1>%%TITLE%%</h1>
+<div class="muted">%%SUBTITLE%%</div>
+<div class="verdict %%VCLASS%%">%%VERDICT%%</div>
+<p class="muted">%%RULE%%</p>
+<h2>Mastery by domain</h2>%%DOMAINS%%
+<h2>Practice-exam history</h2><div>%%MOCKS%%</div>
+<h2>Where you stand</h2>%%STATS%%
+</body></html>"""
+
+
+def _bar_color(pct):
+    return "#1f6f43" if pct >= 80 else ("#c9a227" if pct >= 60 else "#b4232c")
+
+
+def render_dashboard(spec):
+    """Readiness at a glance: domain mastery, mock-score history, GO / NOT YET."""
+    pass_pct = spec.get("pass_pct", 80)
+    streak_target = spec.get("streak_target", 3)
+    min_domain = spec.get("min_domain", 65)
+    domains = spec.get("domains", [])
+    mocks = spec.get("mocks", [])
+
+    drows = []
+    for d in domains:
+        m = d.get("mastery", 0)
+        drows.append(
+            f'<div class="row"><span class="lab">{esc(d.get("name", ""))} '
+            f'<span class="muted">({d.get("weight", "?")}%)</span></span>'
+            f'<span class="track"><span class="fill" style="width:{m}%;background:{_bar_color(m)}"></span></span>'
+            f'<span class="num">{m}%</span></div>'
+        )
+    mhtml = "".join(
+        f'<span class="mock" style="background:{_bar_color(mk.get("pct", 0))};color:#fff" '
+        f'title="{esc(mk.get("date", ""))}">{mk.get("pct", 0)}%</span>'
+        for mk in mocks
+    ) or '<span class="muted">No practice exams taken yet.</span>'
+
+    qualifying = [mk for mk in mocks if mk.get("pct", 0) >= pass_pct]
+    weak = [d.get("name") for d in domains if d.get("mastery", 0) < min_domain]
+    ready = len(qualifying) >= streak_target and not weak
+    rule = (
+        f"Ready = {streak_target} practice exams at or above {pass_pct}%, "
+        f"and no domain below {min_domain}%."
+    )
+    stats = (
+        f'<p><span class="big">{len(qualifying)}</span> / {streak_target} qualifying exams '
+        f'(&ge;{pass_pct}%)</p>'
+    )
+    if spec.get("exam_date"):
+        stats += f'<p>Exam date: <b>{esc(spec["exam_date"])}</b></p>'
+    if spec.get("cards_due") is not None:
+        stats += f'<p>Cards due for re-quiz: <b>{esc(spec["cards_due"])}</b></p>'
+    if weak:
+        stats += f'<p class="muted">Still weak (&lt;{min_domain}%): {esc(", ".join(weak))}</p>'
+
+    return (
+        DASH_PAGE.replace("%%TITLE%%", esc(spec.get("title", "Readiness")))
+        .replace("%%SUBTITLE%%", esc(spec.get("subtitle", "")))
+        .replace("%%VCLASS%%", "go" if ready else "notyet")
+        .replace("%%VERDICT%%", "GO — you're ready" if ready else "NOT YET")
+        .replace("%%RULE%%", rule)
+        .replace("%%DOMAINS%%", "".join(drows))
+        .replace("%%MOCKS%%", mhtml)
+        .replace("%%STATS%%", stats)
+    )
+
+
 def try_pdf(html_path, pdf_path):
     """Best-effort HTML->PDF using whatever is installed. Returns path or None.
 
@@ -343,7 +500,24 @@ def main():
         print(f"Wrote {html_path}")
         print("Open it in a browser — it's a timed, self-scoring mock with a per-domain breakdown.")
         return
-    body = render_practice_exam(spec) if kind == "practice_exam" else render_study_guide(spec)
+    if kind in ("board", "visual"):
+        html_path = base + ".html"
+        with open(html_path, "w", encoding="utf-8") as fh:
+            fh.write(render_board(spec))
+        print(f"Wrote {html_path}  (open in a browser)")
+        return
+    if kind == "dashboard":
+        html_path = base + ".html"
+        with open(html_path, "w", encoding="utf-8") as fh:
+            fh.write(render_dashboard(spec))
+        print(f"Wrote {html_path}  (open in a browser)")
+        return
+    if kind == "chapter":
+        body = render_chapter(spec)
+    elif kind == "practice_exam":
+        body = render_practice_exam(spec)
+    else:
+        body = render_study_guide(spec)
     page = PAGE.safe_substitute(
         title=esc(spec.get("title", "Document")),
         subtitle=esc(spec.get("subtitle", "")),

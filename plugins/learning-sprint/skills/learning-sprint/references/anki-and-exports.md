@@ -47,6 +47,23 @@ Rules that matter:
 - Good cert decks are mostly Basic recall + Cloze for facts/numbers. Generate cards
   from the cheat sheet and from every Stage-3 miss.
 
+## Chapters, the board & the dashboard — `scripts/build_docs.py`
+
+- **Chapter** (`type: chapter`) — a digestible lesson; always offer HTML or PDF.
+  `{"type":"chapter","title":..,"subtitle":..,"sections":[{"heading":..,"body_html":"<p>..</p>","example":{"body_html":"<p>..</p>"},"keypoints":[..]}],"check":[{"q":..,"a":..}]}`.
+  `example` renders a callout; `check` renders collapsible self-test questions.
+- **The board** (`type: board`) — an on-demand visual. `{"type":"board","title":..,
+  "mermaid":"graph LR; A-->B","html":"<table>..</table>","caption":..}`. Provide
+  `mermaid` for a diagram/flow/tree (rendered via Mermaid; needs internet to draw,
+  degrades to readable source) and/or `html` for styled tables/labeled boxes. Use on
+  any "show me / put it on the board / visualize."
+- **Dashboard** (`type: dashboard`) — readiness at a glance, computed by the script:
+  `{"type":"dashboard","title":..,"pass_pct":80,"streak_target":3,"min_domain":65,
+  "exam_date":..,"cards_due":N,"domains":[{"name":..,"weight":28,"mastery":70}],
+  "mocks":[{"date":..,"pct":81}]}`. Verdict is **GO** only when `streak_target` mocks
+  are ≥ `pass_pct` AND no domain mastery < `min_domain`; otherwise **NOT YET**. Feed it
+  straight from the progress file's `domains` + `mocks`.
+
 ## Study guide & practice exam — `scripts/build_docs.py`
 
 ```

@@ -27,6 +27,7 @@ sprint: aws-saa-c03
 topic: "AWS Certified Solutions Architect – Associate (SAA-C03)"
 type: certification            # certification | skill | theory | tool
 goal: "Pass SAA-C03"
+background: "Knows ML generally; new to AWS services"  # where the student started — tailor to this
 exam_date: 2026-07-15          # omit if not a dated exam
 created: 2026-06-02
 last_session: 2026-06-02
@@ -42,6 +43,10 @@ cards:
   - {id: saa-0001, concept: "Shared Responsibility Model", domain: domain1-design-secure,
      ease: 2.5, interval_days: 1, repetitions: 1, due: 2026-06-03, lapses: 0, last_grade: 4}
 weak_spots: ["VPC peering vs Transit Gateway", "S3 storage-class trade-offs"]
+# Mock-exam history — drives the readiness verdict (>=80% on >=3 mocks, no weak domain):
+mocks:
+  - {date: 2026-06-08, pct: 62, per_domain: {d1: 70, d2: 55}}
+  - {date: 2026-06-12, pct: 81, per_domain: {d1: 80, d2: 75}}
 readiness: 38                  # rough overall % (weighted mean of domain mastery)
 researched: 2026-06-02         # when the research gate last ran (refresh if stale)
 sources:                       # cited knowledge base from the research gate
