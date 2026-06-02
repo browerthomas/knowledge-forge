@@ -22,7 +22,26 @@ Study-guide spec:
   ]
 }
 
-Practice-exam spec:
+Interactive mock-exam spec (timed, self-scoring HTML — open in a browser):
+{
+  "type": "mock_exam",
+  "title": "AWS MLA-C01 Mock Exam",
+  "subtitle": "65 questions · 130 minutes",
+  "time_limit_min": 130,
+  "pass_pct": 72,
+  "domains": {"d1": "Data Engineering", "d2": "EDA", "d3": "Modeling", "d4": "Ops"},
+  "questions": [
+    {"stem": "...", "type": "single", "choices": ["...", "...", "...", "..."],
+     "answer": "C", "explanation": "...", "domain": "d3"},
+    {"stem": "... (choose TWO)", "type": "multi", "choices": ["...", "...", "...", "..."],
+     "answer": ["B", "D"], "explanation": "...", "domain": "d1"}
+  ]
+}
+Renders a self-contained page with a countdown timer, auto-submit on timeout, a
+PASS / NOT YET verdict against pass_pct, a per-domain score breakdown, and inline
+answer review with explanations. No dependencies; nothing to install.
+
+Static printable practice-exam spec:
 {
   "type": "practice_exam",
   "title": "AWS SAA-C03 Practice Exam",
@@ -136,6 +155,129 @@ def render_practice_exam(spec):
     return "\n".join(body) + "\n" + "\n".join(key)
 
 
+def _norm_answer(ans):
+    if isinstance(ans, list):
+        return [str(a).strip().upper() for a in ans]
+    return [str(ans).strip().upper()]
+
+
+MOCK_PAGE = r"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>%%TITLE%%</title>
+<style>
+:root{--ink:#1a1a1a;--accent:#1f6f43;--bad:#b4232c;--rule:#ccc;}
+*{box-sizing:border-box;}
+body{font-family:"Helvetica Neue",Arial,sans-serif;color:var(--ink);line-height:1.45;
+     max-width:46rem;margin:0 auto;padding:4.4rem 1rem 3rem;}
+#bar{position:fixed;top:0;left:0;right:0;background:#fff;border-bottom:2px solid var(--accent);
+     display:flex;align-items:center;gap:1rem;padding:.6rem 1rem;z-index:9;}
+#bar #title{font-weight:700;flex:1;}
+#timer{font-variant-numeric:tabular-nums;font-weight:700;color:var(--accent);}
+button{font:inherit;font-weight:600;background:var(--accent);color:#fff;border:0;border-radius:6px;
+       padding:.5rem .9rem;cursor:pointer;}
+button[disabled]{opacity:.5;cursor:default;}
+.meta{color:#555;margin:.4rem 0 1.4rem;}
+.q{border-bottom:1px dotted var(--rule);padding:1rem 0;}
+.q .stem{font-weight:600;margin-bottom:.5rem;} .q .num{color:var(--accent);margin-right:.4rem;}
+.choices label{display:block;margin:.3rem 0;padding:.35rem .5rem;border-radius:6px;cursor:pointer;}
+.choices label:hover{background:#f3f7f4;} .choices input{margin-right:.5rem;}
+.q-ok{background:#f1f8f3;} .q-bad{background:#fdf2f2;}
+.review{margin-top:.5rem;font-size:.92em;padding:.4rem .6rem;border-radius:6px;}
+.review.ok{background:#e7f5ec;} .review.bad{background:#fbe7e7;} .review .ex{color:#444;margin-top:.25rem;}
+#results{margin:1.4rem 0;padding:1rem 1.2rem;border:2px solid var(--accent);border-radius:8px;}
+#results.fail{border-color:var(--bad);} .verdict{font-size:1.3em;font-weight:800;}
+.pass{color:var(--accent);} .fail{color:var(--bad);}
+table{width:100%;border-collapse:collapse;margin-top:.6rem;}
+th,td{border:1px solid var(--rule);padding:.35rem .5rem;text-align:left;}
+.dbar{height:.7em;background:var(--accent);border-radius:3px;display:inline-block;vertical-align:middle;}
+</style></head><body>
+<div id="bar"><span id="title">%%TITLE%%</span><span id="timer"></span>
+<button id="submitBtn" onclick="submitExam()">Submit exam</button></div>
+<div class="meta">%%META%%</div>
+<div id="results" hidden></div>
+<form id="exam">%%QUESTIONS%%</form>
+<div style="text-align:center;margin-top:1rem;"><button onclick="submitExam()">Submit exam</button></div>
+<script>
+var DATA = %%DATA%%;
+var done = false;
+function fmt(s){var m=Math.floor(s/60),x=s%60;return m+":"+(x<10?"0":"")+x;}
+var remain = DATA.time_limit_min*60, tEl = document.getElementById("timer");
+function tick(){tEl.textContent="Time left "+fmt(remain); if(remain<=0){submitExam();return;} remain--;}
+tick(); var timer = setInterval(tick,1000);
+function picked(n){return Array.prototype.slice.call(document.querySelectorAll('[name="'+n+'"]:checked')).map(function(e){return e.value;});}
+function eq(a,b){if(a.length!==b.length)return false;return a.slice().sort().join(",")===b.slice().sort().join(",");}
+function esc(t){var d=document.createElement("div");d.textContent=(t==null?"":t);return d.innerHTML;}
+function submitExam(){
+  if(done)return; done=true; clearInterval(timer);
+  document.getElementById("submitBtn").disabled=true;
+  var correct=0, dom={};
+  DATA.questions.forEach(function(q,i){
+    var sel=picked("q"+i), ok=eq(sel,q.answer);
+    if(ok)correct++;
+    var d=q.domain||"general", dn=DATA.domains[d]||d;
+    dom[d]=dom[d]||{n:dn,c:0,t:0}; dom[d].t++; if(ok)dom[d].c++;
+    var qe=document.getElementById("q"+i); qe.classList.add(ok?"q-ok":"q-bad");
+    var rv=qe.querySelector(".review"); rv.hidden=false; rv.className="review "+(ok?"ok":"bad");
+    rv.innerHTML="Correct: <b>"+q.answer.join(", ")+"</b> &middot; You: "+(sel.length?sel.join(", "):"(blank)")
+      +"<div class=ex>"+esc(q.explanation)+"</div>";
+  });
+  var n=DATA.questions.length, pct=n?Math.round(correct/n*100):0, pass=pct>=DATA.pass_pct;
+  var rows="";
+  Object.keys(dom).forEach(function(k){var o=dom[k],p=Math.round(o.c/o.t*100);
+    rows+="<tr><td>"+esc(o.n)+"</td><td>"+o.c+"/"+o.t+"</td><td><span class=dbar style='width:"+p+"%'></span> "+p+"%</td></tr>";});
+  var r=document.getElementById("results"); r.hidden=false; r.className=pass?"":"fail";
+  r.innerHTML="<h2>Result</h2><p class=verdict><span class='"+(pass?"pass":"fail")+"'>"+(pass?"PASS":"NOT YET")
+    +"</span> &mdash; "+correct+"/"+n+" ("+pct+"%), passing is "+DATA.pass_pct+"%</p>"
+    +"<table><tr><th>Domain</th><th>Score</th><th></th></tr>"+rows+"</table>"
+    +"<p style='color:#555'>Estimate vs the published passing percentage; the real exam uses a scaled score. Review each question below.</p>";
+  r.scrollIntoView({behavior:"smooth"});
+}
+</script></body></html>"""
+
+
+def render_mock_exam(spec):
+    questions = spec.get("questions", [])
+    qhtml = []
+    for i, q in enumerate(questions):
+        ans = _norm_answer(q.get("answer", ""))
+        multi = q.get("type") == "multi" or len(ans) > 1
+        itype = "checkbox" if multi else "radio"
+        note = f" <em>(choose {len(ans)})</em>" if multi else ""
+        opts = []
+        for j, choice in enumerate(q.get("choices", [])):
+            letter = chr(65 + j)
+            opts.append(
+                f'<label><input type="{itype}" name="q{i}" value="{letter}">'
+                f'<span>{letter}.</span> {esc(choice)}</label>'
+            )
+        qhtml.append(
+            f'<div class="q" id="q{i}"><div class="stem"><span class="num">{i + 1}.</span>'
+            f'{esc(q.get("stem", ""))}{note}</div>'
+            f'<div class="choices">{"".join(opts)}</div>'
+            '<div class="review" hidden></div></div>'
+        )
+    data = {
+        "time_limit_min": spec.get("time_limit_min", 90),
+        "pass_pct": spec.get("pass_pct", 72),
+        "domains": spec.get("domains", {}),
+        "questions": [
+            {
+                "answer": _norm_answer(q.get("answer", "")),
+                "explanation": q.get("explanation", ""),
+                "domain": q.get("domain", "general"),
+            }
+            for q in questions
+        ],
+    }
+    data_str = json.dumps(data).replace("</", "<\\/")
+    meta = esc(spec.get("subtitle", f"{len(questions)} questions"))
+    return (
+        MOCK_PAGE.replace("%%TITLE%%", esc(spec.get("title", "Mock Exam")))
+        .replace("%%META%%", meta)
+        .replace("%%QUESTIONS%%", "\n".join(qhtml))
+        .replace("%%DATA%%", data_str)
+    )
+
+
 def try_pdf(html_path, pdf_path):
     """Best-effort HTML->PDF using whatever is installed. Returns path or None."""
     candidates = [
@@ -164,6 +306,13 @@ def main():
     base = sys.argv[2] if len(sys.argv) > 2 else os.path.splitext(spec_path)[0]
 
     kind = spec.get("type", "study_guide")
+    if kind == "mock_exam":
+        html_path = base + ".html"
+        with open(html_path, "w", encoding="utf-8") as fh:
+            fh.write(render_mock_exam(spec))
+        print(f"Wrote {html_path}")
+        print("Open it in a browser — it's a timed, self-scoring mock with a per-domain breakdown.")
+        return
     body = render_practice_exam(spec) if kind == "practice_exam" else render_study_guide(spec)
     page = PAGE.safe_substitute(
         title=esc(spec.get("title", "Document")),

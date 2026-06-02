@@ -36,9 +36,16 @@ the real format:
   explained in the answer key.
 - Weight questions per domain to match the blueprint.
 
+Build it as the **interactive scored mock** (`type: mock_exam`, see
+`anki-and-exports.md`): pull `pass_pct`, `time_limit_min`, and the `domains` map from
+the official guide so the verdict and per-domain breakdown are real. A static
+`practice_exam` PDF is the offline companion.
+
 ## 4. Readiness gate
 
-Before telling the user they're ready, check: weighted `readiness` ≥ the passing
-score with margin, AND no single high-weight domain left weak. Report honestly —
-"Domain 2 is 25% and it's 26% of the exam; you're not ready yet" beats false
-comfort. The whole skill depends on honest grading.
+The mock-exam score *is* the readiness signal. Before telling the user they're ready,
+check: a timed mock at or above the real passing percentage with margin, AND no single
+high-weight domain left weak in the per-domain breakdown. Report honestly — "you
+scored 68%, passing is 72%, and Domain 3 (24% of the exam) is your hole at 50%" beats
+false comfort. Feed every missed question into `weak_spots` and the Anki deck. The
+whole skill depends on honest grading.

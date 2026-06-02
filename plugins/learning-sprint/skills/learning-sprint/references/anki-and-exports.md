@@ -64,5 +64,15 @@ Study-guide JSON: `{"type":"study_guide","title":..,"subtitle":..,"sections":[{"
 
 Practice-exam JSON: `{"type":"practice_exam","title":..,"subtitle":..,"questions":[{"stem":..,"type":"mc","choices":[..],"answer":"C","explanation":..}]}`
 — `type:"free"` gives a write-in box instead of choices. The answer key is forced
-onto its own page so it can be printed and separated. See `certification-mode.md`
-for making the exam mirror the real test.
+onto its own page so it can be printed and separated.
+
+**Scored mock exam** (the cert readiness tool) — `{"type":"mock_exam","title":..,
+"time_limit_min":130,"pass_pct":72,"domains":{"d1":"Data Engineering",..},
+"questions":[{"stem":..,"type":"single|multi","choices":[..],"answer":"C" | ["B","D"],
+"explanation":..,"domain":"d1"}]}`. Produces a self-contained interactive HTML: a
+countdown timer that auto-submits, a PASS / NOT YET verdict against `pass_pct`, a
+per-domain score breakdown, and inline answer review. `answer` is the choice letter(s)
+(A=first choice); set `domain` per question so the breakdown is meaningful. Pull
+`pass_pct`, `time_limit_min`, and the `domains` map from the official exam guide. See
+`certification-mode.md` for making it mirror the real test, and feed every miss back
+into `weak_spots` + the Anki deck.

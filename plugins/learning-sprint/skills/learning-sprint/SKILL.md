@@ -18,6 +18,7 @@ request (e.g. "just quiz me on X" → Stage 3 only).
 
 Read these as needed; they hold the load-bearing detail so this file stays lean:
 - `references/research-gate.md` — **mandatory** research-before-teaching gate (no guessing).
+- `references/your-materials.md` — prefer the user's own exam guide / course / notes.
 - `references/progress-file.md` — the cross-session state file + **resume protocol**.
 - `references/certification-mode.md` — exam blueprints, weighting, realistic exams.
 - `references/spaced-repetition.md` — SM-2 rule for in-app re-quizzing + Anki split.
@@ -79,9 +80,14 @@ any plan, cheat sheet, quiz, ladder, or explanation. No guessing, ever.** This f
 once per sprint, before Stage 1, on a cold start (a resumed sprint already has its
 researched base — refresh only if stale).
 
-Read and follow `references/research-gate.md`. In short: do genuine multi-source web
-research, read the authoritative/primary sources, cross-check every non-trivial claim
-against ≥2 current sources, and record a cited knowledge base in the progress file.
+**First ask if the user has their own material** (official exam guide, course, slides,
+notes, an existing deck) and build from it — see `references/your-materials.md`. Their
+authoritative source beats the open web for *what* to learn.
+
+Then read and follow `references/research-gate.md`. In short: do genuine multi-source
+web research, read the authoritative/primary sources, cross-check every non-trivial
+claim against ≥2 current sources, and record a cited knowledge base in the progress
+file.
 Scale depth to the stakes — go deep for certifications, interviews, and broad fields,
 using a deep-research capability if one is available. Then show a short **research
 brief** ("here's what's actually current, the real 20%, the sources") before Stage 1.
@@ -224,8 +230,14 @@ Turn the session into durable, portable artifacts. Offer these (read
   `cards.json`, run `scripts/anki_export.py`. Tag by exam domain. Default to TSV;
   `.apkg` if genanki is installed.
 - **Study guide** — a polished, printable HTML (→ Save as PDF) via `build_docs.py`.
-- **Practice exam** — for certifications, a realistic, blueprint-weighted exam with a
-  page-broken answer key, via `build_docs.py`. See `references/certification-mode.md`.
+- **Scored mock exam** — for certifications, an interactive, timed, self-scoring mock
+  (`type: mock_exam` via `build_docs.py`): countdown timer, auto-submit, a PASS / NOT
+  YET verdict against the real passing percentage, a **per-domain score breakdown**,
+  and inline answer review. This *is* the readiness gate — feed every missed question
+  back into `weak_spots` and the SR deck. Build it blueprint-weighted; see
+  `references/certification-mode.md`.
+- **Printable practice exam** — a static `type: practice_exam` PDF/HTML with a
+  page-broken answer key, for offline work.
 - **Spaced re-quizzes** — keep SM-2 state in the progress file and offer to
   `/schedule` re-quiz sessions on the due dates, so retention actually compounds.
 
@@ -278,5 +290,5 @@ never give false "you're ready."
 4. SEQUENCE → 5 levels, checkable milestone each
 5. RESOURCE → top 5, justified, WEB-VALIDATED
 6. RE-TEACH → Feynman loop until clean unprompted explanation
-7. RETAIN   → Anki deck + study guide + practice exam + scheduled spaced re-quizzes
+7. RETAIN   → Anki deck + study guide + scored timed mock exam + scheduled re-quizzes
 ```
