@@ -3,7 +3,29 @@
 Every sprint persists to one human-readable file so it can be **resumed** in a
 later conversation. This is the single source of truth all exports read from.
 
-## Location
+## The lane index (cross-lane memory)
+
+A student may have **several lanes** going at once (e.g. two certs). The teacher keeps
+a roster so it remembers the whole picture and where each lane was left off:
+
+```
+~/learning-sprints/index.md
+```
+
+One line per lane — goal, readiness, last session, and the next action:
+
+```markdown
+# Learning lanes
+- [AWS MLA-C01](aws-mla-c01/progress.md) — ML Engineer Associate · readiness 26% · last 2026-06-02 · next: teach Chapter 1 (Data Prep)
+- [CKA](cka/progress.md) — Certified Kubernetes Admin · readiness 0% · last 2026-05-30 · next: research gate + plan
+```
+
+**On activation, read the index first.** If the student names a topic, open that lane.
+If they don't, show the roster — *"You've got two lanes going: MLA-C01 (next: Chapter 1)
+and CKA (not started). Which today?"* — and let them pick. Create a new lane (and add a
+line) when they start a new topic. **Update the lane's line after every session.**
+
+## Per-lane files
 
 ```
 ~/learning-sprints/<slug>/progress.md      # the state file

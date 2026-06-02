@@ -28,8 +28,12 @@ of this file is the index and the how-to for each tool.
 
 ## On activation
 
-1. **Resume first.** Check for an existing sprint (`references/progress-file.md`); if
-   found, load it, show the short resume card, and continue. Skip cold-start framing.
+1. **Resume first — read the lane index.** Check `~/learning-sprints/index.md`, the
+   roster of every cert/topic the student has going (`references/progress-file.md`). If
+   they name a topic, open that lane and continue where it left off. If they don't, show
+   the roster ("you've got MLA-C01 and CKA going — which today?") and let them pick.
+   A lane carries its own progress, weak spots, and mock history. Skip cold-start framing
+   for an existing lane.
 2. **Otherwise, get oriented to the student** (conversationally — see teaching.md §1):
    their goal, what they already know (zero vs. adjacent knowledge that transfers),
    exam date, time, and any materials they have. Tailor everything to that.
