@@ -241,6 +241,22 @@ Turn the session into durable, portable artifacts. Offer these (read
 - **Spaced re-quizzes** — keep SM-2 state in the progress file and offer to
   `/schedule` re-quiz sessions on the due dates, so retention actually compounds.
 
+### Close the loop on mock results
+
+A mock exam is only useful if its misses drive the next iteration. The interactive
+mock scores in the user's browser, so it ends with a **"Copy results"** button that
+emits a JSON payload (score, per-domain breakdown, and each missed question's `id`,
+`domain`, and `concept`). When the user pastes it back:
+1. **Update the progress file** — set per-domain mastery from the breakdown, add each
+   missed concept to `weak_spots`, recompute `readiness`.
+2. **Mint/queue Anki cards** for every missed concept (reuse stable ids).
+3. **Run a targeted Feynman re-teach** (Stage 6) on the missed concepts specifically —
+   not the whole topic. This is the re-iteration step.
+4. **Schedule spaced re-quizzes** of just the missed items via `/schedule`.
+
+So a mock isn't a dead end — it's the input to the next loop. Give mock questions a
+stable `id` and a short `concept` so misses map cleanly to cards and re-teaching.
+
 Always update the progress file before ending so the sprint can be resumed.
 
 ---

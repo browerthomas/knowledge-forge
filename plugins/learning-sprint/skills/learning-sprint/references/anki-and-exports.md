@@ -72,7 +72,13 @@ onto its own page so it can be printed and separated.
 "explanation":..,"domain":"d1"}]}`. Produces a self-contained interactive HTML: a
 countdown timer that auto-submits, a PASS / NOT YET verdict against `pass_pct`, a
 per-domain score breakdown, and inline answer review. `answer` is the choice letter(s)
-(A=first choice); set `domain` per question so the breakdown is meaningful. Pull
-`pass_pct`, `time_limit_min`, and the `domains` map from the official exam guide. See
-`certification-mode.md` for making it mirror the real test, and feed every miss back
-into `weak_spots` + the Anki deck.
+(A=first choice); set `domain` per question so the breakdown is meaningful. Give each
+question a stable **`id`** and a short **`concept`** so misses map back to cards and
+re-teaching. Pull `pass_pct`, `time_limit_min`, and the `domains` map from the official
+exam guide. See `certification-mode.md` for making it mirror the real test.
+
+**Closing the loop:** the mock scores in the browser and ends with a "Copy results"
+button emitting a JSON payload (`score`, `pct`, `pass`, `per_domain`, and `missed` with
+each item's `id`/`domain`/`concept`/`your`/`correct`). When the user pastes it back,
+update the progress file, mint Anki cards for the misses, run a targeted Feynman
+re-teach on those concepts, and `/schedule` spaced re-quizzes — see SKILL.md Stage 7.

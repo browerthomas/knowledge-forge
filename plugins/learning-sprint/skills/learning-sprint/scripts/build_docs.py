@@ -209,27 +209,42 @@ function esc(t){var d=document.createElement("div");d.textContent=(t==null?"":t)
 function submitExam(){
   if(done)return; done=true; clearInterval(timer);
   document.getElementById("submitBtn").disabled=true;
-  var correct=0, dom={};
+  var correct=0, dom={}, missed=[];
   DATA.questions.forEach(function(q,i){
     var sel=picked("q"+i), ok=eq(sel,q.answer);
     if(ok)correct++;
     var d=q.domain||"general", dn=DATA.domains[d]||d;
     dom[d]=dom[d]||{n:dn,c:0,t:0}; dom[d].t++; if(ok)dom[d].c++;
+    if(!ok)missed.push({id:q.id,domain:dn,concept:q.concept||"",
+      your:(sel.length?sel.join(""):"(blank)"),correct:q.answer.join("")});
     var qe=document.getElementById("q"+i); qe.classList.add(ok?"q-ok":"q-bad");
     var rv=qe.querySelector(".review"); rv.hidden=false; rv.className="review "+(ok?"ok":"bad");
     rv.innerHTML="Correct: <b>"+q.answer.join(", ")+"</b> &middot; You: "+(sel.length?sel.join(", "):"(blank)")
       +"<div class=ex>"+esc(q.explanation)+"</div>";
   });
   var n=DATA.questions.length, pct=n?Math.round(correct/n*100):0, pass=pct>=DATA.pass_pct;
-  var rows="";
+  var rows="", dlist=[];
   Object.keys(dom).forEach(function(k){var o=dom[k],p=Math.round(o.c/o.t*100);
-    rows+="<tr><td>"+esc(o.n)+"</td><td>"+o.c+"/"+o.t+"</td><td><span class=dbar style='width:"+p+"%'></span> "+p+"%</td></tr>";});
+    rows+="<tr><td>"+esc(o.n)+"</td><td>"+o.c+"/"+o.t+"</td><td><span class=dbar style='width:"+p+"%'></span> "+p+"%</td></tr>";
+    dlist.push({domain:o.n,correct:o.c,total:o.t,pct:p});});
+  var payload={topic:DATA.title,score:correct,total:n,pct:pct,pass:pass,per_domain:dlist,missed:missed};
+  var pj=JSON.stringify(payload,null,2);
   var r=document.getElementById("results"); r.hidden=false; r.className=pass?"":"fail";
   r.innerHTML="<h2>Result</h2><p class=verdict><span class='"+(pass?"pass":"fail")+"'>"+(pass?"PASS":"NOT YET")
     +"</span> &mdash; "+correct+"/"+n+" ("+pct+"%), passing is "+DATA.pass_pct+"%</p>"
     +"<table><tr><th>Domain</th><th>Score</th><th></th></tr>"+rows+"</table>"
-    +"<p style='color:#555'>Estimate vs the published passing percentage; the real exam uses a scaled score. Review each question below.</p>";
+    +"<h3 style='margin-top:1rem'>Re-teach what you missed</h3>"
+    +"<p style='color:#555'>Copy this and paste it back to your learning assistant — it'll re-teach the misses, add them to your Anki deck, and schedule spaced re-quizzes.</p>"
+    +"<textarea id='payload' readonly style='width:100%;height:9em;font-family:monospace;font-size:.8rem'>"+esc(pj)+"</textarea>"
+    +"<div style='margin-top:.4rem'><button type='button' onclick='copyResults()'>Copy results</button> <span id='copied' style='color:var(--accent);font-weight:600'></span></div>"
+    +"<p style='color:#555;margin-top:.6rem'>Estimate vs the published passing percentage; the real exam uses a scaled score. Review each question above.</p>";
   r.scrollIntoView({behavior:"smooth"});
+}
+function copyResults(){
+  var t=document.getElementById("payload"); t.select();
+  function flag(){var c=document.getElementById("copied"); c.textContent="Copied!";}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t.value).then(flag,function(){});}
+  try{if(document.execCommand("copy"))flag();}catch(e){}
 }
 </script></body></html>"""
 
@@ -256,16 +271,19 @@ def render_mock_exam(spec):
             '<div class="review" hidden></div></div>'
         )
     data = {
+        "title": spec.get("title", "Mock Exam"),
         "time_limit_min": spec.get("time_limit_min", 90),
         "pass_pct": spec.get("pass_pct", 72),
         "domains": spec.get("domains", {}),
         "questions": [
             {
+                "id": q.get("id") or f"q{i + 1}",
                 "answer": _norm_answer(q.get("answer", "")),
                 "explanation": q.get("explanation", ""),
                 "domain": q.get("domain", "general"),
+                "concept": q.get("concept", ""),
             }
-            for q in questions
+            for i, q in enumerate(questions)
         ],
     }
     data_str = json.dumps(data).replace("</", "<\\/")
