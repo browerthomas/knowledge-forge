@@ -47,4 +47,7 @@ The natural interval progression with "Good" answers is roughly
   `ease`, or a recent failing `last_grade`.
 - To automate it, offer `/schedule`: e.g. re-quiz the due set in 2 days, then on each
   card's next `due`. Only offer a concrete date you can derive from the card state —
-  never invent one.
+  never invent one. `/schedule` works in both Claude Code and Claude Cowork (in Cowork,
+  scheduled tasks run only while the machine is awake and the Desktop app is open, so a
+  due re-quiz may fire late — the SR state in the progress file makes manual resume
+  work regardless).

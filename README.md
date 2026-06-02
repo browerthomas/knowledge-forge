@@ -61,6 +61,27 @@ Restart the session after installing. Then just say "teach me X" or "run a learn
 4. Click **Install** on `learning-sprint`.
 5. Start a new conversation — the skill is live.
 
+### Claude Cowork (macOS desktop agent)
+
+Cowork auto-discovers skills from `~/.claude/skills/`, so copy the skill folder there:
+
+```bash
+cp -R plugins/learning-sprint/skills/learning-sprint ~/.claude/skills/learning-sprint
+```
+
+(If you've already installed via Claude Code's marketplace, the skill lives under the
+plugin directory; copying it into `~/.claude/skills/` is the reliable path for Cowork.)
+
+What works in Cowork:
+- **Full teaching flow, persistence, and exports** — Cowork has a sandboxed terminal
+  (runs the `python3` generator scripts) and ships **LibreOffice**, so the study guide
+  and practice exam produce real PDFs automatically.
+- **Research gate** — Cowork has Web Search / Web Fetch, but a workspace **Owner must
+  enable Web Search** and you toggle it on per chat (**+** → *Web search*). With it off,
+  the skill builds from your own materials and says so.
+- **Spaced re-quizzes** — `/schedule` works in Cowork; note scheduled tasks only run
+  while your Mac is awake and the Desktop app is open.
+
 ### Claude.ai (web) — zip upload fallback
 
 The web app installs skills as an uploaded folder rather than from a repo URL. Use the bundled `learning-sprint.zip`:

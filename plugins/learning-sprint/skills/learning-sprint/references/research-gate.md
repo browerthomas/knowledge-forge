@@ -62,6 +62,17 @@ the *weight* of the response differs enormously:
 - If research can't establish something important, **say so plainly** and tell the
   user what you'd need to confirm it.
 
+## If web tools aren't available (e.g. Cowork with web search off)
+
+Some surfaces gate web access (in Claude Cowork an Owner must enable Web Search, then
+the user toggles it on per chat). If you have no working web search/fetch:
+1. **Lean entirely on the user's own materials** (`your-materials.md`) — the official
+   exam guide, course, notes. This is the best ground truth anyway.
+2. **Say so explicitly:** "Web search isn't available here, so I'm building from your
+   materials only — enable Web Search (or paste a source) and I'll validate against
+   the current web." Record the limitation in the progress file.
+3. **Still never guess.** Better to mark something "⚠️ unverified" than to invent it.
+
 ## Present before proceeding
 
 After the gate, show a short **research brief** — "here's what's actually current,

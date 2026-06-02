@@ -297,18 +297,30 @@ def render_mock_exam(spec):
 
 
 def try_pdf(html_path, pdf_path):
-    """Best-effort HTML->PDF using whatever is installed. Returns path or None."""
+    """Best-effort HTML->PDF using whatever is installed. Returns path or None.
+
+    LibreOffice (soffice) is included because Claude Cowork ships it; it writes
+    <basename>.pdf into --outdir, which we then move to pdf_path if needed.
+    """
+    outdir = os.path.dirname(os.path.abspath(pdf_path)) or "."
+    base = os.path.splitext(os.path.basename(html_path))[0]
+    libre_out = os.path.join(outdir, base + ".pdf")
     candidates = [
-        ("wkhtmltopdf", ["wkhtmltopdf", "-q", html_path, pdf_path]),
-        ("weasyprint", ["weasyprint", html_path, pdf_path]),
-        ("pandoc", ["pandoc", html_path, "-o", pdf_path]),  # needs a PDF engine
+        ("wkhtmltopdf", ["wkhtmltopdf", "-q", html_path, pdf_path], None),
+        ("weasyprint", ["weasyprint", html_path, pdf_path], None),
+        ("libreoffice", ["libreoffice", "--headless", "--convert-to", "pdf", "--outdir", outdir, html_path], libre_out),
+        ("soffice", ["soffice", "--headless", "--convert-to", "pdf", "--outdir", outdir, html_path], libre_out),
+        ("pandoc", ["pandoc", html_path, "-o", pdf_path], None),  # needs a PDF engine
     ]
-    for tool, cmd in candidates:
+    for tool, cmd, produced in candidates:
         if not shutil.which(tool):
             continue
         try:
-            subprocess.run(cmd, check=True, capture_output=True, timeout=120)
-            return pdf_path
+            subprocess.run(cmd, check=True, capture_output=True, timeout=180)
+            if produced and produced != pdf_path and os.path.exists(produced):
+                os.replace(produced, pdf_path)
+            if os.path.exists(pdf_path):
+                return pdf_path
         except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
             continue
     return None
