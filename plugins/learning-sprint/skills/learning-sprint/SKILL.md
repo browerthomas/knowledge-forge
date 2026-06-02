@@ -25,6 +25,8 @@ of this file is the index and the how-to for each tool.
 - `references/progress-file.md` — the cross-session state file + resume protocol.
 - `scripts/build_docs.py` — chapters, the board (visuals), study guides, exams, mock exams, dashboard.
 - `scripts/anki_export.py` — cards JSON → Anki `.tsv` (+ `.apkg` if genanki present).
+- `scripts/progress.py` — **deterministic lane state** (SR/SM-2, mock history, readiness,
+  question bank, dashboard spec, lane index). Use it for all tracking; never hand-edit the math.
 
 ## On activation
 
@@ -133,11 +135,14 @@ it together, Socratically → find the deficiencies → close them (re-teach, dr
 
 ## Tracking & readiness
 
-Keep score the whole way in the progress file: per-domain mastery, **mock scores over
-time** (`mocks:`), weak spots, cards due. Aim study at the weakest, highest-weight
-areas. **Ready = ≥80% on at least 3 practice exams, with no scored domain left weak.**
-Until then the verdict is NOT YET — say so plainly and point at what's lagging. Show the
-dashboard so the student sees where they stand.
+Keep score the whole way via **`scripts/progress.py`** (it owns `state.json`): per-domain
+mastery, mock-score history, SR cards, weak spots, cards due. Record mocks with
+`record-mock`, grade re-quizzes with `review`, check `readiness`, and generate the
+`dashboard` spec from it — never hand-compute the SM-2 math or the verdict. Aim study at
+the weakest, highest-weight areas. **Ready = ≥80% on at least 3 practice exams, with no
+scored domain left weak** (`progress.py readiness`). Until then the verdict is NOT YET —
+say so plainly and point at what's lagging. Show the dashboard so the student sees where
+they stand.
 
 ## Execution notes
 

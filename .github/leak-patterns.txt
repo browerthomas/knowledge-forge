@@ -1,0 +1,17 @@
+# Secrets / personal data that must never be committed.
+# One extended-regex (grep -E) per line. '#' lines are comments.
+
+# Private keys
+-----BEGIN (RSA |EC |OPENSSH |PGP )?PRIVATE KEY-----
+
+# AWS access key IDs
+AKIA[0-9A-Z]{16}
+
+# Generic API/secret assignments with a real-looking value
+(api[_-]?key|secret|token|password)["' ]*[:=]["' ]*[A-Za-z0-9/+_-]{20,}
+
+# OpenAI / Anthropic style keys
+sk-[A-Za-z0-9]{20,}
+
+# Personal email of the maintainer (use a placeholder in docs instead)
+tomtombrower555@gmail\.com

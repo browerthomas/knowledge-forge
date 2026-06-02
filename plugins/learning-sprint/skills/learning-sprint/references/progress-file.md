@@ -25,10 +25,26 @@ If they don't, show the roster — *"You've got two lanes going: MLA-C01 (next: 
 and CKA (not started). Which today?"* — and let them pick. Create a new lane (and add a
 line) when they start a new topic. **Update the lane's line after every session.**
 
+## Machine state vs. human narrative
+
+Each lane keeps two things:
+- **`state.json`** — the **machine source of truth**, owned by `scripts/progress.py`
+  (domains/mastery, SR cards, mock history, question bank, readiness inputs). **Always
+  read and update it through `progress.py`** — never hand-edit the SR math, mock
+  history, or readiness; that's what kept drifting. The dashboard and mock exams are
+  generated *from* it, not hand-computed.
+- **`progress.md`** — the human-readable narrative you maintain: the research brief,
+  cheat sheet, session log, weak-spot notes. This is for the student to read.
+
+Typical commands (see `progress.py -h`): `init`, `set-domains`, `add-card`, `review`,
+`due`, `add-questions`, `sample-mock`, `record-mock`, `set-mastery`, `readiness`,
+`dashboard`, `reindex`. Pass `--today YYYY-MM-DD` for deterministic dates.
+
 ## Per-lane files
 
 ```
-~/learning-sprints/<slug>/progress.md      # the state file
+~/learning-sprints/<slug>/state.json        # machine state — managed by progress.py
+~/learning-sprints/<slug>/progress.md       # human narrative (brief, cheat sheet, log)
 ~/learning-sprints/<slug>/cards.json        # card spec for anki_export.py
 ~/learning-sprints/<slug>/cards.tsv|.apkg   # generated Anki deck
 ~/learning-sprints/<slug>/study-guide.html  # generated study guide

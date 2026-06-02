@@ -1,100 +1,102 @@
 # knowledge-forge
 
-A personal Claude skills marketplace. Currently ships one skill: **learning-sprint**.
+A personal teacher that lives in Claude and takes you from zero to passing a
+certification (AWS, Azure, GCP, CompTIA, CISSP, PMP, CKA, and more).
 
-> **learning-sprint** — takes any topic from zero to retained understanding using chained techniques: a 20-hour 80/20 plan, a one-page cheat sheet, progressive quizzing, a 5-level difficulty ladder, web-validated resources, the Feynman re-teach loop, and a retention stage that exports an **Anki deck**, a printable **study guide**, and a **practice exam**. It **never teaches from memory** — a mandatory research gate grounds every plan, fact, and quiz answer in fresh, cross-checked, cited sources first. Progress **persists and resumes across sessions**, and it has a dedicated **certification mode** (blueprint-weighted plans and exams). The first time it runs in a conversation it shows an orientation card and lets you pick a run mode.
-
-### Requirements for the export features
-
-- **Persistence** writes to `~/learning-sprints/<slug>/` — no setup needed.
-- **Anki / study guide / practice exam** exports use `python3` (any 3.x). The Anki deck always produces a zero-dependency `.tsv` (import via Anki → File → Import); install `genanki` (`pip install genanki`) for one-click `.apkg` files. Study guide / practice exam always produce print-ready HTML (open → Print → Save as PDF); if `pandoc`, `wkhtmltopdf`, or `weasyprint` is installed, a PDF is generated automatically too.
-
----
-
-## Publishing this (you, once)
-
-1. Create a **public** GitHub repo — `browerthomas/knowledge-forge`.
-2. Push the entire contents of this folder to the repo root (so `.claude-plugin/marketplace.json` sits at the top level).
-3. Done. Anyone can now install it with the commands below. To ship updates, bump the `version` fields and push — installers refresh with `/plugin marketplace update`.
-
-```
-your-repo-root/
-├── .claude-plugin/
-│   └── marketplace.json
-├── plugins/
-│   └── learning-sprint/
-│       ├── .claude-plugin/
-│       │   └── plugin.json
-│       └── skills/
-│           └── learning-sprint/
-│               └── SKILL.md
-└── README.md
-```
+Ships one skill: **learning-sprint**. You chat with it like a tutor in a study group.
+It researches the real exam, teaches you in digestible chapters, draws diagrams when
+they help, quizzes you, runs timed mock exams, tracks your progress across exams, and
+tells you — honestly — when you're ready to sit the test.
 
 ---
 
-## Installing it (your friend)
+## Install
 
-The marketplace name is `knowledge-forge` and the plugin name is `learning-sprint`, so the install target is `learning-sprint@knowledge-forge`.
+Pick the app you use. Both take about a minute.
 
 ### Claude Code (terminal)
+
+Run these two commands:
 
 ```bash
 claude plugin marketplace add browerthomas/knowledge-forge
 claude plugin install learning-sprint@knowledge-forge
 ```
 
-Or from inside a Claude Code session, interactively:
+Restart Claude Code. Done.
 
-```
-/plugin marketplace add browerthomas/knowledge-forge
-/plugin install learning-sprint@knowledge-forge
-```
+### Claude Cowork (Mac app)
 
-Restart the session after installing. Then just say "teach me X" or "run a learning sprint on X."
-
-### Claude Desktop app
-
-1. Open the **Customize** panel in the left sidebar → **Skills**.
-2. Click **+** next to *Personal plugins*.
-3. Paste the GitHub repo path (`browerthomas/knowledge-forge`) and click **Sync**.
-4. Click **Install** on `learning-sprint`.
-5. Start a new conversation — the skill is live.
-
-### Claude Cowork (macOS desktop agent)
-
-Cowork auto-discovers skills from `~/.claude/skills/`, so copy the skill folder there:
+Copy the skill into Cowork's skills folder:
 
 ```bash
-cp -R plugins/learning-sprint/skills/learning-sprint ~/.claude/skills/learning-sprint
+git clone https://github.com/browerthomas/knowledge-forge.git
+cp -R knowledge-forge/plugins/learning-sprint/skills/learning-sprint ~/.claude/skills/learning-sprint
 ```
 
-(If you've already installed via Claude Code's marketplace, the skill lives under the
-plugin directory; copying it into `~/.claude/skills/` is the reliable path for Cowork.)
-
-What works in Cowork:
-- **Full teaching flow, persistence, and exports** — Cowork has a sandboxed terminal
-  (runs the `python3` generator scripts) and ships **LibreOffice**, so the study guide
-  and practice exam produce real PDFs automatically.
-- **Research gate** — Cowork has Web Search / Web Fetch, but a workspace **Owner must
-  enable Web Search** and you toggle it on per chat (**+** → *Web search*). With it off,
-  the skill builds from your own materials and says so.
-- **Spaced re-quizzes** — `/schedule` works in Cowork; note scheduled tasks only run
-  while your Mac is awake and the Desktop app is open.
-
-### Claude.ai (web) — zip upload fallback
-
-The web app installs skills as an uploaded folder rather than from a repo URL. Use the bundled `learning-sprint.zip`:
-
-1. Settings → **Capabilities / Skills** → **Upload skill**.
-2. Select `learning-sprint.zip`.
-
-Skills require a paid Claude plan. If the upload option isn't present, the account/plan doesn't have custom skills enabled.
+Restart Cowork. Done. (To let it research the live exam, turn on **Web Search**: your
+workspace Owner enables it, then click **+ → Web search** in a chat.)
 
 ---
 
-## Notes
+## How to use it
 
-- Requires a recent Claude Code (plugin/marketplace support; v2.0.13+ is a safe floor, newer is better).
-- Private repos work too — installers just need git credentials configured for the host (e.g. `gh auth login`).
-- The skill itself is plain markdown (`SKILL.md`) with a YAML frontmatter `description` that controls when Claude auto-invokes it.
+Just talk to it. For example:
+
+- **"Study for my AWS Machine Learning Engineer – Associate exam."**
+- **"Teach me Kubernetes networking."**
+- **"Quiz me on TLS."**
+
+It will ask what you already know and when your exam is, then start teaching. As you
+go, you can say things like:
+
+- **"Show me that"** / **"put it on the board"** — it draws a diagram.
+- **"Give me the next chapter as a PDF."**
+- **"Make me a practice exam."** / **"Am I ready?"**
+
+Your progress is saved automatically, so you can come back any time and say
+**"resume my sprint"** — even across several certs at once.
+
+---
+
+## Good to know
+
+- **Free study materials it can make for you:** flashcards (Anki), a printable study
+  guide, and timed practice exams. These use `python3` (already on most machines).
+  Flashcards always export as a file you import into Anki; install `genanki`
+  (`pip install genanki`) for one-click decks. Study guides/exams open in your browser
+  to print or save as PDF.
+- **It won't make things up.** Before teaching, it researches the current exam against
+  real sources and flags anything it can't verify.
+- **Your study data stays on your computer** (in `~/learning-sprints/`). Nothing is
+  uploaded.
+
+---
+
+## Updating
+
+When a new version ships:
+
+- **Claude Code:** `claude plugin marketplace update knowledge-forge`
+- **Cowork:** `git pull` in the cloned folder, then copy the skill folder again.
+
+---
+
+<details>
+<summary>For maintainers (publishing changes)</summary>
+
+This repo is a Claude Code plugin marketplace. Layout:
+
+```
+.claude-plugin/marketplace.json
+plugins/learning-sprint/
+  .claude-plugin/plugin.json
+  skills/learning-sprint/SKILL.md   ← the skill
+  skills/learning-sprint/references/  ← how-to docs the skill reads
+  skills/learning-sprint/scripts/     ← python generators (chapters, exams, Anki, tracking)
+README.md
+```
+
+To ship an update: edit the skill, bump `version` in **both** `marketplace.json` and
+`plugin.json`, and push. Installers refresh with the update commands above.
+</details>
