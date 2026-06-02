@@ -18,6 +18,21 @@ If they share files, **read them** (the Read tool handles PDFs, notebooks, and t
 If they give a URL, fetch it. If they have nothing, fall back to the research gate's
 web sources alone.
 
+### When a PDF won't parse (have a fallback — don't dead-end)
+
+PDF extraction can fail: PDF page-rendering may be unavailable (needs poppler /
+`pdftotext`), a web-fetched PDF may arrive as un-parsable compressed streams, and
+small-model fetchers choke on binary. If you can't reliably read a PDF, **do not
+guess its contents** — fall back, in order:
+1. Try `pdftotext <file> -` if it's installed (best plain-text extraction).
+2. Find the same content as **HTML** — the official guide and reputable summaries
+   usually exist as web pages you *can* parse; cross-check several.
+3. Ask the user to paste the relevant section (e.g. the domain list) as text.
+
+Whatever you use, record it and its limitation honestly in the progress file (e.g.
+"official PDF unparsed here; blueprint taken from the HTML guide + 2 corroborating
+sources").
+
 ## How to use ingested material
 
 - **Extract the real structure.** Pull the actual objectives / domains / weights / table
