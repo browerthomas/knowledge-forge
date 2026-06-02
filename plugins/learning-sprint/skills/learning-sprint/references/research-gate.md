@@ -33,11 +33,21 @@ the user asks).
 
 ## Depth scaling
 
+Effort is a spectrum, matched to the stakes — no guessing applies at every level, but
+the *weight* of the response differs enormously:
+
+- **Easy / one-off question** ("what are the OSI layers?") → this usually isn't a
+  sprint at all. Just answer it, after a **quick validation** of the facts against a
+  current source. Don't spin up the full apparatus.
 - **Quick / well-bounded topic** → a focused pass: several searches + fetch the few
   authoritative sources, cross-checked.
-- **Big, fast-moving, or high-stakes topic** (a certification, an interview, a broad
-  field) → go deep: broad fan-out, more sources, adversarial verification. **If a
-  deep-research capability/skill is available in the environment, use it** for this
+- **Stated credential / exam / role-readiness goal** ("I'm trying to get the AWS
+  Certified Machine Learning – Associate," "ramp me for a staff SRE interview") → the
+  signal to **go deep AND build it all out**. Deep multi-source research (broad
+  fan-out, primary sources, adversarial verification — fetch the current official exam
+  guide), then proactively offer the full sprint: plan → ladder → cheat sheet → quiz →
+  Feynman → Anki deck + study guide + practice exam, all persisted for resume. **If a
+  deep-research capability/skill is available in the environment, use it** for the
   gate; otherwise perform the deep research directly following this protocol.
 
 ## Hard rules (apply to every stage that follows)

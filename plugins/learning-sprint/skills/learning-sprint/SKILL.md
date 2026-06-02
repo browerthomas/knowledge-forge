@@ -98,7 +98,15 @@ research can't confirm something important, say so rather than guess.
 framework, a certification domain, a language feature, a body of theory, a tool.
 - "Teach me Kubernetes networking" · "Study for my AWS SAA-C03 exam" · "Help me master RAG before my interview"
 
-**Not a sprint:** one-off factual questions, single definitions, quick lookups.
+**A stated credential / exam / role-readiness goal is the strongest signal** — e.g.
+"I'm trying to get the AWS Certified Machine Learning – Associate." Go deep on the
+research gate and **proactively offer to build the whole thing out** (plan → ladder →
+cheat sheet → quiz → Feynman → Anki deck + study guide + practice exam), persisted for
+resume. See `references/research-gate.md` (depth scaling).
+
+**Not a sprint:** one-off factual questions, single definitions, quick lookups —
+answer those directly, after a quick validation of the facts. No guessing, but no
+need for the full apparatus either.
 
 ---
 
