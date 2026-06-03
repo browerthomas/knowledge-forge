@@ -494,6 +494,83 @@ def render_dashboard(spec):
     )
 
 
+COURSE_PAGE = r"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>%%TITLE%%</title>
+<style>
+:root{--bg:#0a0a0d;--bg-2:#0f0f13;--surface:#16161b;--surface-2:#1c1c22;--border:#2a2a32;--border-2:#3a3a44;
+      --text:#f0f0f3;--text-2:#a8a8b3;--text-3:#6b6b78;--ember:#ff7530;--ember-2:#ffac4a;--ember-3:#fff0c8;--steel:#8c95a2;--green:#5fbf7a;
+      --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;}
+.app{display:flex;min-height:100vh;}
+.side{width:18rem;flex:0 0 18rem;background:var(--bg-2);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.2rem .8rem;}
+.brand{font-weight:800;font-size:1.05rem;padding:.4rem .6rem 1rem;background:linear-gradient(135deg,var(--ember),var(--ember-2) 60%,var(--ember-3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.tab{display:block;padding:.5rem .7rem;margin:.15rem 0;border-radius:8px;color:var(--text-2);text-decoration:none;font-size:.9rem;line-height:1.35;cursor:pointer;border:1px solid transparent;}
+.tab:hover{background:var(--surface);color:var(--text);}
+.tab.active{background:var(--surface-2);color:var(--text);border-color:var(--border-2);border-left:3px solid var(--ember);}
+.content{flex:1;max-width:48rem;margin:0 auto;padding:2.6rem 2.4rem;overflow-y:auto;height:100vh;}
+.content{scroll-behavior:smooth;}
+h1{font-size:1.9rem;font-weight:800;letter-spacing:-.02em;margin:0 0 .3rem;background:linear-gradient(135deg,var(--ember),var(--ember-2) 60%,var(--ember-3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+h2{font-size:1.3rem;font-weight:700;color:var(--ember-2);margin:1.8rem 0 .6rem;}
+h3{font-size:1.08rem;font-weight:700;}
+p,li{color:var(--text-2);line-height:1.65;} strong{color:var(--text);} a{color:var(--ember-2);}
+code{font-family:var(--mono);background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:.05em .35em;font-size:.9em;}
+table{width:100%;border-collapse:collapse;margin:1rem 0;} th,td{border:1px solid var(--border);padding:.5em .7em;text-align:left;color:var(--text-2);} th{background:var(--surface-2);color:var(--text);}
+.sub{color:var(--text-3);margin-bottom:1.2rem;}
+.keypoints{background:var(--surface-2);border:1px solid var(--border-2);border-left:3px solid var(--ember);border-radius:8px;padding:.7em 1.1em;margin:1.2em 0;}
+.keypoints strong{color:var(--ember-2);}
+.example{background:var(--surface-2);border:1px solid var(--border);border-left:3px solid var(--steel);border-radius:8px;padding:.6em 1em;margin:1.1em 0;}
+.example .lbl{font-weight:700;color:var(--text-3);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;}
+.check{margin-top:1.8em;} .check details{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:.6em .9em;margin:.5em 0;}
+.check summary{font-weight:600;color:var(--text);cursor:pointer;} .check details>div{color:var(--text-2);margin-top:.4em;}
+.navfoot{margin-top:2.5rem;padding-top:1.2rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;}
+.navfoot button{font:inherit;font-weight:600;background:var(--surface-2);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.5rem .9rem;cursor:pointer;}
+.navfoot button:hover{border-color:var(--ember);} .navfoot button[disabled]{opacity:.35;cursor:default;}
+@media (max-width:760px){.app{flex-direction:column;}.side{width:auto;flex:none;height:auto;position:static;border-right:0;border-bottom:1px solid var(--border);}.content{height:auto;padding:1.6rem 1.2rem;}}
+@media print{.side{display:none;}.content{height:auto;max-width:none;}.chapter[hidden]{display:block!important;} .navfoot{display:none;}
+  body{background:#fff;color:#111;}h1{background:none;-webkit-text-fill-color:#111;color:#111;}h2{color:#2453a6;}p,li,td{color:#222;}strong{color:#000;}
+  .keypoints,.example,.check details{background:#f7f9fc;border-color:#ccd;}}
+</style></head>
+<body><div class="app">
+<nav class="side"><div class="brand">%%TITLE%%</div>%%NAV%%</nav>
+<main class="content">%%PANES%%</main>
+</div>
+<script>
+var tabs=Array.prototype.slice.call(document.querySelectorAll('.tab'));
+var ids=tabs.map(function(t){return t.getAttribute('data-c');});
+function show(id){
+  Array.prototype.slice.call(document.querySelectorAll('.chapter')).forEach(function(c){c.hidden=(c.id!==id);});
+  tabs.forEach(function(t){t.classList.toggle('active',t.getAttribute('data-c')===id);});
+  if(history.replaceState)history.replaceState(null,'','#'+id);
+  var m=document.querySelector('.content'); if(m)m.scrollTop=0;
+}
+function go(delta){var cur=ids.indexOf((location.hash||'#'+ids[0]).slice(1));var n=cur+delta;if(n>=0&&n<ids.length)show(ids[n]);}
+tabs.forEach(function(t){t.addEventListener('click',function(e){e.preventDefault();show(t.getAttribute('data-c'));});});
+var h=(location.hash||'').slice(1); show(h&&document.getElementById(h)?h:ids[0]);
+</script></body></html>"""
+
+
+def render_course(spec):
+    chapters = spec.get("chapters", [])
+    nav, panes = [], []
+    for i, ch in enumerate(chapters):
+        cid = ch.get("id", f"c{i}")
+        nav.append(f'<a class="tab" data-c="{cid}">{esc(ch.get("nav_title", ch.get("title", cid)))}</a>')
+        inner = render_chapter(ch)  # reuse the chapter renderer for each pane
+        prev_btn = '<button onclick="go(-1)">&larr; Previous</button>' if i > 0 else '<span></span>'
+        next_btn = '<button onclick="go(1)">Next &rarr;</button>' if i < len(chapters) - 1 else '<span></span>'
+        panes.append(
+            f'<section class="chapter" id="{cid}" hidden><h1>{esc(ch.get("title", ""))}</h1>'
+            f'<div class="sub">{esc(ch.get("subtitle", ""))}</div>{inner}'
+            f'<div class="navfoot">{prev_btn}{next_btn}</div></section>'
+        )
+    return (
+        COURSE_PAGE.replace("%%TITLE%%", esc(spec.get("title", "Course")))
+        .replace("%%NAV%%", "\n".join(nav))
+        .replace("%%PANES%%", "\n".join(panes))
+    )
+
+
 def try_pdf(html_path, pdf_path):
     """Best-effort HTML->PDF using whatever is installed. Returns path or None.
 
@@ -552,6 +629,13 @@ def main():
         with open(html_path, "w", encoding="utf-8") as fh:
             fh.write(render_dashboard(spec))
         print(f"Wrote {html_path}  (open in a browser)")
+        return
+    if kind == "course":
+        html_path = base + ".html"
+        with open(html_path, "w", encoding="utf-8") as fh:
+            fh.write(render_course(spec))
+        n = len(spec.get("chapters", []))
+        print(f"Wrote {html_path}  ({n} chapters, left-tab navigation — open in a browser)")
         return
     if kind == "chapter":
         body = render_chapter(spec)

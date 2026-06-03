@@ -2,6 +2,11 @@
 
 All notable changes to **learning-sprint** (the `knowledge-forge` marketplace).
 
+## 2.4.0
+- New `course` output: bundle the whole syllabus into ONE self-contained HTML with
+  left-side chapter tabs, prev/next nav, and deep-link hashes (dark theme; print shows
+  all chapters). Lets the teacher deliver the entire curriculum as a single document.
+
 ## 2.3.0
 - The chapter set is now a self-sufficient curriculum: a student should pass on the
   chapters alone. progress.py adds a syllabus + coverage tracking; readiness requires

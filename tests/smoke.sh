@@ -37,8 +37,9 @@ echo "4. python scripts compile"
 python3 -m py_compile "$SCRIPTS"/*.py || fail "py_compile failed"
 
 echo "5. build_docs.py renders every type"
-for kind in study_guide practice_exam chapter board dashboard mock_exam; do
+for kind in study_guide practice_exam chapter board dashboard mock_exam course; do
   case $kind in
+    course)        echo '{"type":"course","title":"T","chapters":[{"id":"c0","nav_title":"0","title":"C0","sections":[{"heading":"H","body_html":"<p>x</p>","keypoints":["k"]}],"check":[{"q":"q","a":"a"}]},{"id":"c1","nav_title":"1","title":"C1","sections":[{"heading":"H","body_html":"<p>y</p>"}],"check":[{"q":"q","a":"a"}]}]}' > "$TMP/s.json"; spec="$TMP/s.json";;
     study_guide)   echo '{"type":"study_guide","title":"T","sections":[{"heading":"H","body_html":"<p>x</p>","keypoints":["k"]}]}' > "$TMP/s.json"; spec="$TMP/s.json";;
     practice_exam) echo '{"type":"practice_exam","title":"T","questions":[{"stem":"q","type":"mc","choices":["a","b"],"answer":"A","explanation":"e"}]}' > "$TMP/s.json"; spec="$TMP/s.json";;
     chapter)       echo '{"type":"chapter","title":"T","sections":[{"heading":"H","body_html":"<p>x</p>","example":{"body_html":"<p>e</p>"},"keypoints":["k"]}],"check":[{"q":"q","a":"a"}]}' > "$TMP/s.json"; spec="$TMP/s.json";;

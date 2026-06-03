@@ -64,6 +64,13 @@ Rules that matter:
   are ≥ `pass_pct` AND no domain mastery < `min_domain`; otherwise **NOT YET**. Feed it
   straight from the progress file's `domains` + `mocks`.
 
+**Full course** (`type: course`) — bundle many chapters into ONE self-contained HTML
+with a **left-side tab per chapter** the student works through (prev/next nav, deep-link
+hashes, dark theme, print shows all chapters). Spec: `{"type":"course","title":..,
+"chapters":[{"id":"c0","nav_title":"0 · Intro","title":..,"subtitle":..,"sections":[...],
+"check":[...]}]}` — each chapter takes the same `sections`/`check` shape as `type: chapter`.
+Use it to deliver the whole syllabus as one document.
+
 ## Study guide & practice exam — `scripts/build_docs.py`
 
 ```
