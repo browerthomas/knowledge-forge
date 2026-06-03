@@ -2,6 +2,10 @@
 
 All notable changes to **learning-sprint** (the `knowledge-forge` marketplace).
 
+## 2.2.1
+- Chapters are now robust and self-contained by default: teach the underlying concept
+  first, then the platform/tool specifics; don't assume fundamentals unless shown.
+
 ## 2.2.0
 - Deterministic state: `scripts/progress.py` owns per-lane `state.json` (SM-2 review,
   due list, deduped question bank, weighted mock sampling, mastery, readiness verdict,

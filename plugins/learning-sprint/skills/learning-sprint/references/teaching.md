@@ -19,7 +19,10 @@ interrogation:
   (official guide, course, notes — see `your-materials.md`).
 
 Then tailor: skip what they own, spend time where they're weak, map new ideas onto
-what they already understand.
+what they already understand. **But err toward teaching too much, not too little** —
+if you're unsure whether they know a fundamental, cover it. A learner saying "I know
+the field generally" still usually wants the underlying concept reinforced alongside
+the new platform specifics, not skipped. Confirm before assuming away fundamentals.
 
 ## 2. The core loop (the default rhythm)
 
@@ -40,7 +43,11 @@ Repeat until the readiness threshold (§5) is crossed.
 ## 3. The war chest (use what fits, skip what doesn't)
 
 Each is documented in SKILL.md / the references. Deploy adaptively:
-- **Chapter** — a stylized HTML/PDF lesson for a unit (concept → example → check).
+- **Chapter** — a stylized HTML/PDF lesson for a unit. Make chapters **robust and
+  self-contained**: teach the **underlying concept first, then the platform/tool
+  specifics** (e.g. the ML idea, *then* the AWS service that implements it). Don't
+  assume fundamentals unless the student has clearly shown them — when in doubt, teach
+  the concept too. A chapter should stand on its own: concept → worked example → check.
 - **The board** — render a visual when a picture beats prose (diagram, flow, decision
   tree, comparison). Triggered by *any* phrasing: "show me," "put it on the board,"
   "visualize," "can I see that," "draw it."

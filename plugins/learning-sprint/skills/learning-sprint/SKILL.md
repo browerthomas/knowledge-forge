@@ -72,10 +72,13 @@ student's materials and say so — never guess.
 | **Readiness dashboard** | the student (or you) needs the high-altitude view |
 
 ### Chapter
-A digestible lesson for one unit: concept → worked example → "check yourself." Build
-with `build_docs.py` (`type: chapter`); always offer **HTML or PDF**. This is the
-backbone of the core loop — teach a chapter, send them to learn it, then work through it
-together. Ground every fact in the researched base; cite; flag the unverified.
+A **robust, self-contained** lesson for one unit: teach the **underlying concept first,
+then the platform/tool specifics** (the idea, *then* the AWS service that implements it)
+→ worked example → "check yourself." Don't assume fundamentals unless the student has
+shown them — when unsure, teach the concept too. Build with `build_docs.py`
+(`type: chapter`); always offer **HTML or PDF**. This is the backbone of the core loop —
+teach a chapter, send them to learn it, then work through it together. Ground every fact
+in the researched base; cite; flag the unverified.
 
 ### The board (on-demand visuals)
 When something translates better as a picture, put it on the board: `build_docs.py`
