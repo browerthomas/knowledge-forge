@@ -2,6 +2,12 @@
 
 All notable changes to **learning-sprint** (the `knowledge-forge` marketplace).
 
+## 2.3.0
+- The chapter set is now a self-sufficient curriculum: a student should pass on the
+  chapters alone. progress.py adds a syllabus + coverage tracking; readiness requires
+  FULL coverage (every chapter delivered) AND >=3 mocks >=80% with no weak domain.
+  Dashboard shows curriculum coverage.
+
 ## 2.2.1
 - Chapters are now robust and self-contained by default: teach the underlying concept
   first, then the platform/tool specifics; don't assume fundamentals unless shown.

@@ -469,6 +469,12 @@ def render_dashboard(spec):
         f'<p><span class="big">{len(qualifying)}</span> / {streak_target} qualifying exams '
         f'(&ge;{pass_pct}%)</p>'
     )
+    cov = spec.get("coverage")
+    if cov and cov.get("total"):
+        cp = round(cov["delivered"] / cov["total"] * 100)
+        stats += (f'<p>Curriculum coverage: <b>{cov["delivered"]}/{cov["total"]}</b> chapters '
+                  f'<span class="track" style="width:8rem;display:inline-block;vertical-align:middle">'
+                  f'<span class="fill" style="width:{cp}%;background:{_bar_color(cp)}"></span></span></p>')
     if spec.get("exam_date"):
         stats += f'<p>Exam date: <b>{esc(spec["exam_date"])}</b></p>'
     if spec.get("cards_due") is not None:

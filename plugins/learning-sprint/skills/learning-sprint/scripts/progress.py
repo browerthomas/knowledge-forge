@@ -58,10 +58,19 @@ def _norm(text):
     return re.sub(r"[^a-z0-9]+", " ", str(text).lower()).strip()
 
 
+def _coverage(s):
+    syl = s.get("syllabus", [])
+    delivered = [c for c in syl if c.get("status") in ("delivered", "mastered")]
+    return delivered, syl
+
+
 def _is_ready(s):
     qual = [m for m in s.get("mocks", []) if m.get("pct", 0) >= s.get("pass_pct", 80)]
     weak = [d for d in s.get("domains", []) if d.get("mastery", 0) < s.get("min_domain", 65)]
-    return len(qual) >= s.get("streak_target", 3) and not weak, qual, weak
+    delivered, syl = _coverage(s)
+    covered = len(delivered) == len(syl)  # vacuously true if no syllabus yet
+    ready = len(qual) >= s.get("streak_target", 3) and not weak and covered
+    return ready, qual, weak
 
 
 # ---- commands -------------------------------------------------------------
@@ -83,6 +92,7 @@ def cmd_init(args):
         "cards": [],
         "mocks": [],
         "bank": [],
+        "syllabus": [],
         "weak_spots": [],
         "created": _today(args),
         "last_session": _today(args),
@@ -220,21 +230,54 @@ def cmd_set_mastery(args):
     sys.exit(f"no domain {args.domain}")
 
 
+def cmd_set_syllabus(args):
+    s = _load(args.dir)
+    s["syllabus"] = json.loads(args.json)
+    _save(args.dir, s)
+    print(f"set syllabus: {len(s['syllabus'])} chapters")
+
+
+def cmd_cover(args):
+    s = _load(args.dir)
+    for c in s.get("syllabus", []):
+        if c["id"] == args.chapter_id:
+            c["status"] = args.status
+            _save(args.dir, s)
+            print(f"{args.chapter_id} -> {args.status}")
+            return
+    sys.exit(f"no chapter {args.chapter_id}")
+
+
+def cmd_coverage(args):
+    s = _load(args.dir)
+    delivered, syl = _coverage(s)
+    gaps = [c["title"] for c in syl if c.get("status", "planned") == "planned"]
+    print(json.dumps({
+        "delivered": len(delivered), "total": len(syl),
+        "complete": len(delivered) == len(syl) and len(syl) > 0,
+        "gaps": gaps,
+    }, indent=1, ensure_ascii=False))
+
+
 def cmd_readiness(args):
     s = _load(args.dir)
     ready, qual, weak = _is_ready(s)
+    delivered, syl = _coverage(s)
     print(json.dumps({
         "verdict": "GO" if ready else "NOT YET",
         "qualifying_mocks": len(qual),
         "streak_target": s.get("streak_target", 3),
         "pass_pct": s.get("pass_pct", 80),
         "weak_domains": [d["name"] for d in weak],
+        "coverage": f"{len(delivered)}/{len(syl)} chapters delivered",
     }, indent=1, ensure_ascii=False))
 
 
 def cmd_dashboard(args):
     s, t = _load(args.dir), _today(args)
+    delivered, syl = _coverage(s)
     spec = {
+        "coverage": {"delivered": len(delivered), "total": len(syl)},
         "type": "dashboard",
         "title": s.get("topic", "Readiness"),
         "subtitle": "as of " + t,
@@ -302,6 +345,9 @@ def main():
     sp.add_argument("--pct", type=int, required=True); sp.add_argument("--per-domain", dest="per_domain")
     sp.set_defaults(fn=cmd_record_mock)
     sp = sub.add_parser("set-mastery"); lane(sp); sp.add_argument("domain"); sp.add_argument("pct", type=int); sp.set_defaults(fn=cmd_set_mastery)
+    sp = sub.add_parser("set-syllabus"); lane(sp); sp.add_argument("json"); sp.set_defaults(fn=cmd_set_syllabus)
+    sp = sub.add_parser("cover"); lane(sp); sp.add_argument("chapter_id"); sp.add_argument("--status", default="delivered", choices=["planned", "delivered", "mastered"]); sp.set_defaults(fn=cmd_cover)
+    sp = sub.add_parser("coverage"); lane(sp); sp.set_defaults(fn=cmd_coverage)
     sp = sub.add_parser("readiness"); lane(sp); sp.set_defaults(fn=cmd_readiness)
     sp = sub.add_parser("dashboard"); lane(sp); sp.set_defaults(fn=cmd_dashboard)
     sp = sub.add_parser("reindex"); sp.add_argument("root"); sp.add_argument("--today"); sp.set_defaults(fn=cmd_reindex)

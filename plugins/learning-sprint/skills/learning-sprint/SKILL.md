@@ -26,7 +26,8 @@ of this file is the index and the how-to for each tool.
 - `scripts/build_docs.py` — chapters, the board (visuals), study guides, exams, mock exams, dashboard.
 - `scripts/anki_export.py` — cards JSON → Anki `.tsv` (+ `.apkg` if genanki present).
 - `scripts/progress.py` — **deterministic lane state** (SR/SM-2, mock history, readiness,
-  question bank, dashboard spec, lane index). Use it for all tracking; never hand-edit the math.
+  question bank, **syllabus + coverage**, dashboard spec, lane index). Use it for all
+  tracking; never hand-edit the math.
 
 ## On activation
 
@@ -138,14 +139,20 @@ it together, Socratically → find the deficiencies → close them (re-teach, dr
 
 ## Tracking & readiness
 
+**The chapters are the whole course** — a student should be able to pass on them alone,
+no external materials. So the teacher owns *completeness*: derive a **syllabus** from the
+official blueprint (every task statement → a chapter), store it with `progress.py
+set-syllabus`, mark chapters `delivered` as you teach them (`cover`), and check `coverage`
+for gaps. Leave none. See `references/teaching.md` §6.
+
 Keep score the whole way via **`scripts/progress.py`** (it owns `state.json`): per-domain
-mastery, mock-score history, SR cards, weak spots, cards due. Record mocks with
-`record-mock`, grade re-quizzes with `review`, check `readiness`, and generate the
-`dashboard` spec from it — never hand-compute the SM-2 math or the verdict. Aim study at
-the weakest, highest-weight areas. **Ready = ≥80% on at least 3 practice exams, with no
-scored domain left weak** (`progress.py readiness`). Until then the verdict is NOT YET —
-say so plainly and point at what's lagging. Show the dashboard so the student sees where
-they stand.
+mastery, mock-score history, SR cards, weak spots, cards due, syllabus coverage. Record
+mocks with `record-mock`, grade re-quizzes with `review`, check `readiness`, and generate
+the `dashboard` spec from it — never hand-compute the math or the verdict. Aim study at
+the weakest, highest-weight areas. **Ready = ≥80% on ≥3 practice exams, no scored domain
+left weak, AND the full syllabus delivered** (`progress.py readiness` enforces all three).
+Until then the verdict is NOT YET — say so plainly and point at what's lagging. Show the
+dashboard so the student sees where they stand.
 
 ## Execution notes
 

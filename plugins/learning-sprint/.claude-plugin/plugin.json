@@ -1,7 +1,7 @@
 {
   "name": "learning-sprint",
   "description": "Takes any topic from zero to retained understanding via chained techniques: 20-hour plan, cheat sheet, progressive quiz, difficulty ladder, validated resources, the Feynman re-teach loop, and spaced-repetition export (Anki deck, study guide, practice exam). Grounds all material in fresh multi-source web research before presenting — never teaches from memory. Progress persists and resumes across sessions. Strong fit for certification study.",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "author": {
     "name": "browerthomas"
   },
